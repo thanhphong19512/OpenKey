@@ -193,14 +193,24 @@ wstring OpenKeyHelper::getClipboardText(const int& type) {
 	return text;
 }
 
-void OpenKeyHelper::setClipboardText(LPCTSTR data, const int & len, const int& type) {
+bool OpenKeyHelper::setClipboardText(LPCTSTR data, const int & len, const int& type) {
 	HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(WCHAR));
+	if (hMem == NULL) {
+		return false;
+	}
 	memcpy(GlobalLock(hMem), data, len * sizeof(WCHAR));
 	GlobalUnlock(hMem);
-	OpenClipboard(0);
+	if (!OpenClipboard(0)) {
+		GlobalFree(hMem);
+		return false;
+	}
 	EmptyClipboard();
-	SetClipboardData(type, hMem);
+	bool success = SetClipboardData(type, hMem) != NULL;
 	CloseClipboard();
+	if (!success) {
+		GlobalFree(hMem);
+	}
+	return success;
 }
 
 bool OpenKeyHelper::quickConvert() {

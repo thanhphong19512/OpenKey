@@ -83,6 +83,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_USER+2019:
 		AppDelegate::getInstance()->onControlPanel();
 		break;
+	case WM_OPENKEY_QUICK_CONVERT:
+		AppDelegate::getInstance()->onQuickConvert();
+		break;
 	case WM_TRAYMESSAGE: {
 		if (lParam == WM_LBUTTONDBLCLK) {
 			AppDelegate::getInstance()->onControlPanel();
